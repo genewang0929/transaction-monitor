@@ -2,6 +2,7 @@ package com.chunhanwang.controller;
 
 import com.chunhanwang.entity.*;
 import com.chunhanwang.service.*;
+import io.swagger.v3.oas.annotations.*;
 import org.json.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.*;
@@ -15,6 +16,7 @@ public class BankTransactionController {
     @Autowired
     public BankTransactionService bankTransactionService;
 
+    @Operation(summary = "Get all transactions")
     @GetMapping("")
     public ResponseEntity<Object> getAllTransactions() {
         Map<String, Object> map = new HashMap<>();
@@ -22,6 +24,7 @@ public class BankTransactionController {
         return ResponseEntity.ok(map);
     }
 
+    @Operation(summary = "Get a user's monthly transactions")
     @GetMapping("/monthlyTransactions/{year}/{month}/{offset}/{pageSize}")
     public ResponseEntity<Object> getMonthlyTransactions(@PathVariable("year") int year,
                                                          @PathVariable("month") int month,
@@ -34,12 +37,14 @@ public class BankTransactionController {
         return ResponseEntity.ok(map);
     }
 
+    @Operation(summary = "Insert 1200 transactions")
     @PostMapping("")
     public ResponseEntity<Object> generateTransaction() {
         bankTransactionService.generateTransactionsByUsers();
         return ResponseEntity.ok().build();
     }
 
+    @Operation(summary = "Delete all transactions")
     @DeleteMapping("")
     public ResponseEntity<Object> deleteAllTransactions() {
         bankTransactionService.deleteAllTransactions();

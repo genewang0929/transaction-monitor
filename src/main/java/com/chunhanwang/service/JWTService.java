@@ -38,9 +38,9 @@ public class JWTService {
 
         // generate Claims obj into JWT's payload
         Claims claims = Jwts.claims();
-        claims.put("email",userDetails.getUsername());
+        claims.put("iban", userDetails.getUsername());
         claims.setExpiration(calendar.getTime()); // 到期時間 -> RFC 7519 標準的建議內容
-        claims.setIssuer("NoteShareBackend"); // 核發者 -> RFC 7519 標準的建議內容
+        claims.setIssuer("SynpulseBackend"); // 核發者 -> RFC 7519 標準的建議內容
 
         // generate secret key
         Key secretKey = Keys.hmacShaKeyFor(KEY.getBytes());

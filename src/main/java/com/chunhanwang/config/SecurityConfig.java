@@ -1,5 +1,6 @@
 package com.chunhanwang.config;
 
+import com.chunhanwang.filter.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.annotation.*;
 import org.springframework.http.*;
@@ -7,8 +8,10 @@ import org.springframework.security.authentication.*;
 import org.springframework.security.config.annotation.authentication.builders.*;
 import org.springframework.security.config.annotation.web.builders.*;
 import org.springframework.security.config.annotation.web.configuration.*;
+import org.springframework.security.config.http.*;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.security.crypto.bcrypt.*;
+import org.springframework.security.web.authentication.*;
 import org.springframework.web.cors.*;
 
 import java.util.*;
@@ -17,12 +20,12 @@ import java.util.*;
 // 注入(@Autowired) UserDetailsService, Spring 會自動找到有實作這個介面的類別，也就是 SpringUserService
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-//    @Autowired
-//    @Lazy
-//    private UserDetailsService userDetailsService;
-//    @Autowired
-//    @Lazy
-//    private JWTAuthenticationFilter jwtAuthenticationFilter;
+    @Autowired
+    @Lazy
+    private UserDetailsService userDetailsService;
+    @Autowired
+    @Lazy
+    private JWTAuthenticationFilter jwtAuthenticationFilter;
 
     @Override // setting the rules of API's authentication
     protected void configure(HttpSecurity http) throws Exception {
@@ -33,26 +36,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // authorizeRequests 方法開始自訂授權規則。使用 antMatchers 方法，傳入 HTTP 請求方法與 API 路徑，後面接著授權方式，
         http
                 .authorizeHttpRequests()
-                .antMatchers(HttpMethod.POST, "/verification/login").permitAll()
-                .antMatchers(HttpMethod.POST, "/verification/parse").permitAll()
+                .antMatchers("/verification/**").permitAll()
                 .antMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
 //                .anyRequest().permitAll() // tmp for testing
-//                .anyRequest().authenticated() // 對剩下的 API 定義規則
-//                .and()
-//                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-//                .sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .anyRequest().authenticated() // 對剩下的 API 定義規則
+                .and()
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .csrf().disable()
                 .cors().and();
     }
 
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth
-//                .userDetailsService(userDetailsService)
-//                .passwordEncoder(new BCryptPasswordEncoder());
-//    }
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(new BCryptPasswordEncoder());
+    }
 
     @Override
     @Bean
