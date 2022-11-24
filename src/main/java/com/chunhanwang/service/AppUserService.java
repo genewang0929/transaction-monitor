@@ -1,20 +1,35 @@
 package com.chunhanwang.service;
 
 import com.chunhanwang.entity.*;
+import com.chunhanwang.repository.*;
+import org.iban4j.*;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.*;
 
 import java.util.*;
 
 @Service
 public class AppUserService {
-    public List<AppUser> getUsersByIban() {
+    @Autowired
+    public UserRepository userRepository;
+
+    public List<AppUser> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public void deleteAllUsers() {
+        userRepository.deleteAll();
+    }
+
+    public void generateUsers() {
         List<AppUser> users = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             AppUser user = new AppUser();
-            user.setIban(UUID.randomUUID().toString());
-            user.setPassword("1111");
+            user.setIban(Iban.random().toString());
+            user.setPassword("0000");
             users.add(user);
         }
-        return users;
+
+        userRepository.saveAll(users);
     }
 }

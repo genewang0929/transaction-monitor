@@ -3,7 +3,6 @@ package com.chunhanwang.service;
 import com.chunhanwang.entity.*;
 import com.chunhanwang.repository.*;
 import okhttp3.*;
-import org.bson.types.*;
 import org.json.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
@@ -15,29 +14,38 @@ import java.util.*;
 @Service
 public class BankTransactionService {
     @Autowired
-    public AppUserService appUserService;
-    @Autowired
     public BankTransactionRepository bankTransactionRepository;
+    @Autowired
+    public AppUserService appUserService;
 
-    public List<BankTransaction> getTransactionsByUsers() {
-        List<AppUser> users = appUserService.getUsersByIban();
+    public List<BankTransaction> getAllTransactions() {
+        return bankTransactionRepository.findAll();
+    }
+
+    public void generateTransactionsByUsers() {
+        List<AppUser> users = appUserService.getAllUsers();
         List<BankTransaction> bankTransactions = new ArrayList<>();
 
+        // generate 120 transactions for each user
         for (AppUser user: users) {
             for (int year = 1; year <= 10; year++) {
                 for (int month = 1; month <= 12; month++) {
                     BankTransaction bankTransaction = new BankTransaction();
-                    bankTransaction.setId(new ObjectId().toString());
+                    bankTransaction.setId(UUID.randomUUID().toString());
                     bankTransaction.setIban(user.getIban());
-                    bankTransaction.setAmountWithCurrency(getAmountWithCurrency());
-                    bankTransaction.setDate(getDate());
-                    bankTransaction.setDescription(getDescription());
+                    bankTransaction.setAmountWithCurrency(getRandomAmountWithCurrency());
+                    bankTransaction.setDate(getRandomDate());
+                    bankTransaction.setDescription(getRandomDescription());
                     bankTransactions.add(bankTransaction);
                 }
             }
         }
 
-        return bankTransactions;
+        bankTransactionRepository.saveAll(bankTransactions);
+    }
+
+    public void deleteAllTransactions() {
+        bankTransactionRepository.deleteAll();
     }
 
     public PageResponse getMonthlyTransactions(JSONObject monthlyRate, int offset, int pageSize) {
@@ -48,7 +56,6 @@ public class BankTransactionService {
 
         // get monthlyTransactions, totalCreditAndDebit
         monthlyRate.keySet().forEach(dateInMonth -> {
-            // TODO -> find transactions by date
             List<BankTransaction> dailyTransactions = bankTransactionRepository.findByDate(dateInMonth);
             monthlyTransactions.addAll(dailyTransactions);
 
@@ -84,21 +91,21 @@ public class BankTransactionService {
 //
 //    }
 
-    public JSONObject getMonthlyRate(int inputMonth, int inputYear) {
+    public JSONObject getMonthlyRate(int inputYear, int inputMonth) {
         OkHttpClient client = new OkHttpClient().newBuilder().build();
-        JSONObject rates = new JSONObject();
-
         String month = String.valueOf(inputMonth);
         if (inputMonth < 10)
             month = "0" + month;
         String startDate = inputYear + "-" + month + "-01";
         String endDate = inputYear + "-" + month + "-31";
 
+        // user Fixer API
         Request request = new Request.Builder()
-                .url("https://api.apilayer.com/fixer/timeseries?=start_date" + startDate + "&end_date=" + endDate)
+                .url("https://api.apilayer.com/fixer/timeseries?start_date=" + startDate + "&end_date=" + endDate)
                 .addHeader("apikey", "tBFJwzvmAjfR9EXDhin3HpxUIltmrpxo")
                 .method("GET", null)
                 .build();
+        JSONObject rates = new JSONObject();
         try {
             Response response = client.newCall(request).execute();
             JSONObject json = new JSONObject(response.body().string());
@@ -112,7 +119,7 @@ public class BankTransactionService {
         return rates;
     }
 
-    public String getAmountWithCurrency() {
+    public String getRandomAmountWithCurrency() {
         Random rand = new Random();
         String[] typeOfCurrency = {"AED","AFN", "ALL", "AMD", "ANG", "AOA", "ARS", "AUD"};
         int amount = rand.nextInt(100);
@@ -121,23 +128,26 @@ public class BankTransactionService {
         return typeOfCurrency[type] + " " + amount; // GBP -100
     }
 
-    public String getDate() {
+    public String getRandomDate() {
         Random rand = new Random();
 //        String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
         int year = rand.nextInt(10) + 2013;
         int month = rand.nextInt(12) + 1;
-        String day = "31";
-        if (month == 2)
-            day = "28";
-        else if (month == 4 || month == 6 || month == 9 || month == 11)
-            day = "30";
-        if (Integer.parseInt(day) < 10)
-            day = "0" + day;
+        int day = rand.nextInt(31) + 1;
+        String dayInString = "";
+        if (day > 28 && month == 2)
+            day = 28;
+        else if (day == 31 && (month == 4 || month == 6 || month == 9 || month == 11))
+            day = 30;
+        if (day < 10)
+            dayInString = "0" + day;
+        else
+            dayInString = String.valueOf(day);
 
-        return year + "-" + month + "-" + day;
+        return year + "-" + month + "-" + dayInString;
     }
 
-    public String getDescription() {
+    public String getRandomDescription() {
         Random rand = new Random();
         String[] descriptions = {"Online payment", "Food", "Entertainment", "Daily necessity", "Tax", "Investment", "Travel"};
         int type = rand.nextInt(descriptions.length);
