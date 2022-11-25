@@ -1,4 +1,4 @@
-//package com.chunhanwang.config;
+//package com.chunhanwang.kafka;
 //
 //import org.apache.kafka.clients.admin.*;
 //import org.springframework.context.annotation.*;
@@ -7,8 +7,8 @@
 //@Configuration
 //public class KafkaTopicConfig {
 //    @Bean
-//    public NewTopic synpulseTopic() {
-//        return TopicBuilder.name("synpulse")
+//    public NewTopic ebankTopic() {
+//        return TopicBuilder.name("ebank")
 //                .build();
 //    }
 //}

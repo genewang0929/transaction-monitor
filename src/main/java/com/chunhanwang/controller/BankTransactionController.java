@@ -24,15 +24,31 @@ public class BankTransactionController {
         return ResponseEntity.ok(map);
     }
 
+    @Operation(summary = "Get user's transactions")
+    @GetMapping("/user/{userIban}")
+    public ResponseEntity<Object> getTransactionsByIban(@PathVariable("userIban") String iban) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("transactions", bankTransactionService.getTransactionsByIban(iban));
+        return ResponseEntity.ok(map);
+    }
+
+    @GetMapping("/date/{date}")
+    public ResponseEntity<Object> getTransactionsByDate(@PathVariable("date") String date) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("transactions", bankTransactionService.getTransactionsByDate(date));
+        return ResponseEntity.ok(map);
+    }
+
     @Operation(summary = "Get a user's monthly transactions")
-    @GetMapping("/monthlyTransactions/{year}/{month}/{offset}/{pageSize}")
-    public ResponseEntity<Object> getMonthlyTransactions(@PathVariable("year") int year,
+    @GetMapping("/monthlyTransactions/{userIban}/{year}/{month}/{offset}/{pageSize}")
+    public ResponseEntity<Object> getMonthlyTransactions(@PathVariable("userIban") String iban,
+                                                         @PathVariable("year") int year,
                                                          @PathVariable("month") int month,
                                                          @PathVariable("offset") int offset,
                                                          @PathVariable("pageSize") int pageSize) {
         Map<String, Object> map = new HashMap<>();
         JSONObject monthlyRate = bankTransactionService.getMonthlyRate(year, month);
-        PageResponse getMonthlyTransactions = bankTransactionService.getMonthlyTransactions(monthlyRate, offset, pageSize);
+        PageResponse getMonthlyTransactions = bankTransactionService.getMonthlyTransactions(iban, monthlyRate, offset, pageSize);
         map.put("transactions", getMonthlyTransactions);
         return ResponseEntity.ok(map);
     }

@@ -22,21 +22,28 @@ public class BankTransactionService {
         return bankTransactionRepository.findAll();
     }
 
+    public List<BankTransaction> getTransactionsByIban(String iban) { return bankTransactionRepository.findByIban(iban); }
+
+
+    public List<BankTransaction> getTransactionsByDate(String date) {return bankTransactionRepository.findByDate(date); }
+
     public void generateTransactionsByUsers() {
         List<AppUser> users = appUserService.getAllUsers();
         List<BankTransaction> bankTransactions = new ArrayList<>();
 
-        // generate 120 transactions for each user
+        // generate 120,000 transactions for each user -> 1,200,000 transactions in total
         for (AppUser user: users) {
             for (int year = 1; year <= 10; year++) {
                 for (int month = 1; month <= 12; month++) {
-                    BankTransaction bankTransaction = new BankTransaction();
-                    bankTransaction.setId(UUID.randomUUID().toString());
-                    bankTransaction.setIban(user.getIban());
-                    bankTransaction.setAmountWithCurrency(getRandomAmountWithCurrency());
-                    bankTransaction.setDate(getRandomDate());
-                    bankTransaction.setDescription(getRandomDescription());
-                    bankTransactions.add(bankTransaction);
+                    for (int i = 0; i < 1000; i++) {
+                        BankTransaction bankTransaction = new BankTransaction();
+                        bankTransaction.setId(UUID.randomUUID().toString());
+                        bankTransaction.setIban(user.getIban());
+                        bankTransaction.setAmountWithCurrency(getRandomAmountWithCurrency());
+                        bankTransaction.setDate(getRandomDate());
+                        bankTransaction.setDescription(getRandomDescription());
+                        bankTransactions.add(bankTransaction);
+                    }
                 }
             }
         }
@@ -48,7 +55,7 @@ public class BankTransactionService {
         bankTransactionRepository.deleteAll();
     }
 
-    public PageResponse getMonthlyTransactions(JSONObject monthlyRate, int offset, int pageSize) {
+    public PageResponse getMonthlyTransactions(String iban, JSONObject monthlyRate, int offset, int pageSize) {
         List<BankTransaction> monthlyTransactions = new ArrayList<>();
         HashMap<String, Double> totalCreditAndDebit = new HashMap<>();
         totalCreditAndDebit.put("credit", 0.0);
@@ -56,7 +63,7 @@ public class BankTransactionService {
 
         // get monthlyTransactions, totalCreditAndDebit
         monthlyRate.keySet().forEach(dateInMonth -> {
-            List<BankTransaction> dailyTransactions = bankTransactionRepository.findByDate(dateInMonth);
+            List<BankTransaction> dailyTransactions = bankTransactionRepository.findByIbanAndDate(iban, dateInMonth);
             monthlyTransactions.addAll(dailyTransactions);
 
             JSONObject allRatesPerDay = monthlyRate.getJSONObject(dateInMonth);     // all exchange rates of a day
@@ -80,16 +87,6 @@ public class BankTransactionService {
 
         return new PageResponse(page.getContent(), totalCreditAndDebit);
     }
-//
-//    public void getTotalCredit(List<BankTransaction> monthlyTransaction, List<JSONObject> monthlyRate) {
-//        for (int i = 1; i <= 31; i++) {
-//            if (i >= monthlyRate.size())
-//                break;
-//            JSONObject dailyRateOfAllCurrency = monthlyRate.get(i - 1);  // 0~30
-//
-//        }
-//
-//    }
 
     public JSONObject getMonthlyRate(int inputYear, int inputMonth) {
         OkHttpClient client = new OkHttpClient().newBuilder().build();
@@ -135,16 +132,22 @@ public class BankTransactionService {
         int month = rand.nextInt(12) + 1;
         int day = rand.nextInt(31) + 1;
         String dayInString = "";
+        String monthString = "";
         if (day > 28 && month == 2)
             day = 28;
         else if (day == 31 && (month == 4 || month == 6 || month == 9 || month == 11))
             day = 30;
+
+        if (month < 10)
+            monthString = "0" + month;
+        else
+            monthString = String.valueOf(month);
         if (day < 10)
             dayInString = "0" + day;
         else
             dayInString = String.valueOf(day);
 
-        return year + "-" + month + "-" + dayInString;
+        return year + "-" + monthString + "-" + dayInString;
     }
 
     public String getRandomDescription() {

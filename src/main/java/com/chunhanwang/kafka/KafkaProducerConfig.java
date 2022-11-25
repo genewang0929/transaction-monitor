@@ -1,4 +1,4 @@
-//package com.chunhanwang.config;
+//package com.chunhanwang.kafka;
 //
 //import org.apache.kafka.clients.producer.*;
 //import org.apache.kafka.common.serialization.*;
