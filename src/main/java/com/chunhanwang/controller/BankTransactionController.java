@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.*;
 import org.json.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.*;
+import org.springframework.kafka.core.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -15,6 +16,16 @@ import java.util.*;
 public class BankTransactionController {
     @Autowired
     public BankTransactionService bankTransactionService;
+//    @Autowired
+//    private KafkaTemplate<String, String> kafkaTemplate;
+//
+//    private static final String TOPIC = "e-bank";
+//
+//    @GetMapping("/kafka/{message}")
+//    public String post(@PathVariable("message") String message) {
+//        kafkaTemplate.send(TOPIC, message);
+//        return message;
+//    }
 
     @Operation(summary = "Get all transactions")
     @GetMapping("")

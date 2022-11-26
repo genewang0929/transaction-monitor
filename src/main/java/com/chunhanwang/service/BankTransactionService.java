@@ -35,7 +35,7 @@ public class BankTransactionService {
         for (AppUser user: users) {
             for (int year = 1; year <= 10; year++) {
                 for (int month = 1; month <= 12; month++) {
-                    for (int i = 0; i < 1000; i++) {
+//                    for (int i = 0; i < 1000; i++) {
                         BankTransaction bankTransaction = new BankTransaction();
                         bankTransaction.setId(UUID.randomUUID().toString());
                         bankTransaction.setIban(user.getIban());
@@ -43,7 +43,7 @@ public class BankTransactionService {
                         bankTransaction.setDate(getRandomDate());
                         bankTransaction.setDescription(getRandomDescription());
                         bankTransactions.add(bankTransaction);
-                    }
+//                    }
                 }
             }
         }

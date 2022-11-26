@@ -5,7 +5,7 @@
 //
 //@Component
 //public class KafkaListeners {
-//    @KafkaListener(topics = "ebankTopic", groupId = "groupId")
+//    @KafkaListener(topics = "e-bank", groupId = "groupId")
 //    void listener(String data) {
 //        System.out.println("Received " + data);
 //    }

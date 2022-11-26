@@ -130,6 +130,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
+        <finalName>synpulse-backend</finalName>
     </build>
 
 </project>
