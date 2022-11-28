@@ -67,7 +67,7 @@ public class BankTransactionService {
             monthlyTransactions.addAll(dailyTransactions);
 
             JSONObject allRatesPerDay = monthlyRate.getJSONObject(dateInMonth);     // all exchange rates of a day
-            dailyTransactions.stream().forEach(dailyTransaction -> {
+            dailyTransactions.forEach(dailyTransaction -> {
                 String currencyType = dailyTransaction.getAmountWithCurrency().split(" ")[0];   // user's transaction currency type
                 int amountWithCurrency = Integer.parseInt(dailyTransaction.getAmountWithCurrency().split(" ")[1]);
                 double rate = Double.parseDouble(allRatesPerDay.get(currencyType).toString());  // exchange rate by currency type

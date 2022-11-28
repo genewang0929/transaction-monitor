@@ -52,7 +52,7 @@ public class BankTransactionTest {
         createUser();
         createTransaction("2019-09-29", "GBP -100", "Entertainment");
 
-        double exchangeRate = getExchangeRate("2019-09-29", "GBP");
+        double exchangeRate = 0.890161;     // The exchange rate of EUR -> GBP in 2019-09-29
         double realAmount = 100 / exchangeRate;
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -89,24 +89,24 @@ public class BankTransactionTest {
         bankTransactionRepository.insert(bankTransaction);
     }
 
-    public double getExchangeRate(String date, String currency) {
-        OkHttpClient client = new OkHttpClient().newBuilder().build();
-
-        Request request = new Request.Builder()
-                .url("https://api.apilayer.com/fixer/" + date + "?symbols=" + currency + "&base=")
-                .addHeader("apikey", "tBFJwzvmAjfR9EXDhin3HpxUIltmrpxo")
-                .method("GET", null)
-                .build();
-        double rates = 0.0;
-        try {
-            Response response = client.newCall(request).execute();
-            JSONObject json = new JSONObject(response.peekBody(2048).string());
-            rates = Double.parseDouble(json.getJSONObject("rates").get(currency).toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return rates;
-    }
+//    public double getExchangeRate(String date, String currency) {
+//        OkHttpClient client = new OkHttpClient().newBuilder().build();
+//
+//        Request request = new Request.Builder()
+//                .url("https://api.apilayer.com/fixer/" + date + "?symbols=" + currency + "&base=")
+//                .addHeader("apikey", "tBFJwzvmAjfR9EXDhin3HpxUIltmrpxo")
+//                .method("GET", null)
+//                .build();
+//        double rates = 0.0;
+//        try {
+//            Response response = client.newCall(request).execute();
+//            JSONObject json = new JSONObject(response.peekBody(2048).string());
+//            rates = Double.parseDouble(json.getJSONObject("rates").get(currency).toString());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return rates;
+//    }
 
     @AfterEach
     public void clear() {
