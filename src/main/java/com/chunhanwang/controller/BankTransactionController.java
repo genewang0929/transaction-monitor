@@ -51,7 +51,7 @@ public class BankTransactionController {
     }
 
     @Operation(summary = "Get a user's monthly transactions")
-    @GetMapping("/monthlyTransactions/{userIban}/{year}/{month}/{offset}/{pageSize}")
+    @GetMapping("/{userIban}/{year}/{month}/{offset}/{pageSize}")
     public ResponseEntity<Object> getMonthlyTransactions(@PathVariable("userIban") String iban,
                                                          @PathVariable("year") int year,
                                                          @PathVariable("month") int month,
