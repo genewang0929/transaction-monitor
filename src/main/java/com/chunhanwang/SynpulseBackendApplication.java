@@ -13,13 +13,13 @@ public class SynpulseBackendApplication {
     }
 
     // Insert users and transactions
-    @Bean
-    CommandLineRunner runner(AppUserService appUserService, BankTransactionService bankTransactionService) {
-        return args -> {
-            appUserService.deleteAllUsers();
-            bankTransactionService.deleteAllTransactions();
-            appUserService.generateUsers();
-            bankTransactionService.generateTransactionsByUsers();
-        };
-    }
+//    @Bean
+//    CommandLineRunner runner(AppUserService appUserService, BankTransactionService bankTransactionService) {
+//        return args -> {
+//            appUserService.deleteAllUsers();
+//            bankTransactionService.deleteAllTransactions();
+//            appUserService.generateUsers();
+//            bankTransactionService.generateTransactionsByUsers();
+//        };
+//    }
 }
