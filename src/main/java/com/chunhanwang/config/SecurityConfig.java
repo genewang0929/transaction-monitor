@@ -29,21 +29,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override // setting the rules of API's authentication
     protected void configure(HttpSecurity http) throws Exception {
-        //「/users」這個 API 及其底下的所有 GET 請求，需通過身份驗證才可存取。
-        // 其餘 API 的所有GET請求，允許所有呼叫方存取。
-        //「/users」這個 API 的 POST 請求，允許所有呼叫方存取。
-        // 其餘的所有 API，需通過身份驗證才可存取。
-        // authorizeRequests 方法開始自訂授權規則。使用 antMatchers 方法，傳入 HTTP 請求方法與 API 路徑，後面接著授權方式，
         http
                 .authorizeHttpRequests()
                 .antMatchers("/verification/**").permitAll()
                 .antMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                .anyRequest().permitAll() // tmp for testing
-//                .anyRequest().authenticated() // 對剩下的 API 定義規則
-//                .and()
-//                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-//                .sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                .anyRequest().permitAll() // tmp for testing
+                .anyRequest().authenticated()
+                .and()
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .csrf().disable()
                 .cors().and();
