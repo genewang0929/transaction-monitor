@@ -98,7 +98,7 @@ public class BankTransactionService {
 
         // user Fixer API
         Request request = new Request.Builder()
-                .url("https://api.apilayer.com/fixer/timeseries?start_date=" + startDate + "&end_date=" + endDate)
+                .url("https://api.apilayer.com/exchangerates_data/timeseries?start_date=" + startDate + "&end_date=" + endDate)
                 .addHeader("apikey", "tBFJwzvmAjfR9EXDhin3HpxUIltmrpxo")
                 .method("GET", null)
                 .build();
