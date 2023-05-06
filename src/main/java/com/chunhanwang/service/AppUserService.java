@@ -33,14 +33,15 @@ public class AppUserService {
     }
 
     public void generateUsers() {
-        List<AppUser> users = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+//        List<AppUser> users = new ArrayList<>();
+//        for (int i = 0; i < 10; i++) {
             AppUser user = new AppUser();
             user.setIban(Iban.random().toString());
             user.setPassword(passwordEncoder.encode("0000"));
-            users.add(user);
-        }
+//            users.add(user);
+//        }
+        userRepository.save(user);
 
-        userRepository.saveAll(users);
+//        userRepository.saveAll(users);
     }
 }

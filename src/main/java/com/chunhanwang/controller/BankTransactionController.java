@@ -14,17 +14,17 @@ import java.util.*;
 @RestController
 @RequestMapping(value = "/bankTransaction", produces = MediaType.APPLICATION_JSON_VALUE)
 public class BankTransactionController {
-    @Autowired
-    public BankTransactionService bankTransactionService;
-//    @Autowired
-//    private KafkaTemplate<String, String> kafkaTemplate;
-//
-//    private static final String TOPIC = "e-bank";
-//
-//    @GetMapping("/kafka/{message}")
-//    public String post(@PathVariable("message") String message) {
-//        kafkaTemplate.send(TOPIC, message);
-//        return message;
+    public final BankTransactionService bankTransactionService;
+
+    public BankTransactionController(BankTransactionService bankTransactionService) {
+        this.bankTransactionService = bankTransactionService;
+    }
+
+//    @Operation(summary = "Insert a message into kafka provider")
+//    @PostMapping("/kafka_provider")
+//    public ResponseEntity<Object> insertTransactionToKafka() {
+//        kafkaTemplate.send(TOPIC, "sent from spring boot");
+//        return ResponseEntity.ok().build();
 //    }
 
     @Operation(summary = "Get all transactions")
@@ -64,7 +64,7 @@ public class BankTransactionController {
         return ResponseEntity.ok(map);
     }
 
-    @Operation(summary = "Insert 1200 transactions")
+    @Operation(summary = "Insert 120 transactions into Kafka topic")
     @PostMapping("")
     public ResponseEntity<Object> generateTransaction() {
         bankTransactionService.generateTransactionsByUsers();
