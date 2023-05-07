@@ -16,7 +16,7 @@ public class BankTransactionService {
     public final BankTransactionRepository bankTransactionRepository;
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    private static final String TOPIC = "ebankTopic";
+    private static final String TOPIC = "ebankTopic-transactions";
     public final AppUserService appUserService;
 
     public BankTransactionService(BankTransactionRepository bankTransactionRepository, AppUserService appUserService, KafkaTemplate<String, Object> kafkaTemplate) {

@@ -4,9 +4,7 @@ import com.chunhanwang.entity.*;
 import com.chunhanwang.service.*;
 import io.swagger.v3.oas.annotations.*;
 import org.json.*;
-import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.*;
-import org.springframework.kafka.core.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -19,13 +17,6 @@ public class BankTransactionController {
     public BankTransactionController(BankTransactionService bankTransactionService) {
         this.bankTransactionService = bankTransactionService;
     }
-
-//    @Operation(summary = "Insert a message into kafka provider")
-//    @PostMapping("/kafka_provider")
-//    public ResponseEntity<Object> insertTransactionToKafka() {
-//        kafkaTemplate.send(TOPIC, "sent from spring boot");
-//        return ResponseEntity.ok().build();
-//    }
 
     @Operation(summary = "Get all transactions")
     @GetMapping("")

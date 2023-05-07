@@ -8,7 +8,7 @@ import org.springframework.kafka.config.*;
 public class KafkaTopicConfig {
     @Bean
     public NewTopic ebankTopic() {
-        return TopicBuilder.name("ebankTopic")
+        return TopicBuilder.name("ebankTopic-filtered")
                 .build();
     }
 }
