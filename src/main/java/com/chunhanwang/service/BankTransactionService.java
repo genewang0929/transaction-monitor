@@ -39,18 +39,16 @@ public class BankTransactionService {
         List<AppUser> users = appUserService.getAllUsers();
         List<BankTransaction> bankTransactions = new ArrayList<>();
 
-        // generate 120,000 transactions for each user -> 1,200,000 transactions in total
+        // generate 12 transactions for each user
         for (AppUser user: users) {
-            for (int year = 1; year <= 10; year++) {
-                for (int month = 1; month <= 12; month++) {
-                    BankTransaction bankTransaction = new BankTransaction();
-                    bankTransaction.setId(UUID.randomUUID().toString());
-                    bankTransaction.setIban(user.getIban());
-                    bankTransaction.setAmountWithCurrency(getRandomAmountWithCurrency());
-                    bankTransaction.setDate(getRandomDate());
-                    bankTransaction.setDescription(getRandomDescription());
-                    kafkaTemplate.send(TOPIC, bankTransaction);
-                }
+            for (int month = 1; month <= 12; month++) {
+                BankTransaction bankTransaction = new BankTransaction();
+                bankTransaction.setId(UUID.randomUUID().toString());
+                bankTransaction.setIban(user.getIban());
+                bankTransaction.setAmountWithCurrency(getRandomAmountWithCurrency());
+                bankTransaction.setDate(getRandomDate());
+                bankTransaction.setDescription(getRandomDescription());
+                kafkaTemplate.send(TOPIC, bankTransaction);
             }
         }
 

@@ -5,7 +5,7 @@ import org.springframework.stereotype.*;
 
 @Component
 public class KafkaListeners {
-    @KafkaListener(topics = "ebankTopic-filtered", groupId = "groupId")
+    @KafkaListener(topics = "ebankTopic-transactions", groupId = "groupId")
     void listener(String data) {
         System.out.println("Received " + data);
     }
