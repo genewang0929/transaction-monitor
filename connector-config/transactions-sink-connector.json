@@ -1,5 +1,5 @@
 {
-  "name": "my-sink-connector",
+  "name": "transactions-sink-connector",
   "config": {
     "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
     "topics": "ebankTopic-transactions",
