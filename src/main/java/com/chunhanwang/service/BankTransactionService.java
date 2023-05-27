@@ -4,8 +4,8 @@ import com.chunhanwang.entity.*;
 import com.chunhanwang.repository.*;
 import okhttp3.*;
 import org.json.*;
-import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.*;
 
 import java.io.*;
@@ -13,42 +13,42 @@ import java.util.*;
 
 @Service
 public class BankTransactionService {
-    @Autowired
-    public BankTransactionRepository bankTransactionRepository;
-    @Autowired
-    public AppUserService appUserService;
+    public final BankTransactionRepository bankTransactionRepository;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
+
+    private static final String TOPIC = "ebankTopic-transactions";
+    public final AppUserService appUserService;
+
+    public BankTransactionService(BankTransactionRepository bankTransactionRepository, AppUserService appUserService, KafkaTemplate<String, Object> kafkaTemplate) {
+        this.bankTransactionRepository = bankTransactionRepository;
+        this.appUserService = appUserService;
+        this.kafkaTemplate = kafkaTemplate;
+    }
+
 
     public List<BankTransaction> getAllTransactions() {
         return bankTransactionRepository.findAll();
     }
 
-    public List<BankTransaction> getTransactionsByIban(String iban) { return bankTransactionRepository.findByIban(iban); }
-
-
-    public List<BankTransaction> getTransactionsByDate(String date) {return bankTransactionRepository.findByDate(date); }
-
     public void generateTransactionsByUsers() {
         List<AppUser> users = appUserService.getAllUsers();
         List<BankTransaction> bankTransactions = new ArrayList<>();
 
-        // generate 120,000 transactions for each user -> 1,200,000 transactions in total
+        // generate 12 transactions for each user
         for (AppUser user: users) {
-            for (int year = 1; year <= 10; year++) {
-                for (int month = 1; month <= 12; month++) {
-//                    for (int i = 0; i < 1000; i++) {
-                        BankTransaction bankTransaction = new BankTransaction();
-                        bankTransaction.setId(UUID.randomUUID().toString());
-                        bankTransaction.setIban(user.getIban());
-                        bankTransaction.setAmountWithCurrency(getRandomAmountWithCurrency());
-                        bankTransaction.setDate(getRandomDate());
-                        bankTransaction.setDescription(getRandomDescription());
-                        bankTransactions.add(bankTransaction);
-//                    }
-                }
+            for (int month = 1; month <= 12; month++) {
+                BankTransaction bankTransaction = new BankTransaction();
+                bankTransaction.setId(UUID.randomUUID().toString());
+                bankTransaction.setIban(user.getIban());
+                bankTransaction.setAmountWithCurrency(getRandomAmountWithCurrency());
+                bankTransaction.setDate(getRandomDate());
+                bankTransaction.setDescription(getRandomDescription());
+                kafkaTemplate.send(TOPIC, bankTransaction);
             }
         }
 
-        bankTransactionRepository.saveAll(bankTransactions);
+//        bankTransactionRepository.saveAll(bankTransactions);
+
     }
 
     public void deleteAllTransactions() {

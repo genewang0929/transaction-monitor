@@ -25,7 +25,7 @@ public class AppUserController {
         return ResponseEntity.ok(map);
     }
 
-    @Operation(summary = "Insert 10 users")
+    @Operation(summary = "Insert 1 user")
     @PostMapping("")
     public ResponseEntity<Object> generateTransaction() {
         appUserService.generateUsers();

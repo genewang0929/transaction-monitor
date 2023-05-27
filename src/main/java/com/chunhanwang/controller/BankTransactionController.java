@@ -4,9 +4,7 @@ import com.chunhanwang.entity.*;
 import com.chunhanwang.service.*;
 import io.swagger.v3.oas.annotations.*;
 import org.json.*;
-import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.*;
-import org.springframework.kafka.core.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -14,39 +12,17 @@ import java.util.*;
 @RestController
 @RequestMapping(value = "/bankTransaction", produces = MediaType.APPLICATION_JSON_VALUE)
 public class BankTransactionController {
-    @Autowired
-    public BankTransactionService bankTransactionService;
-//    @Autowired
-//    private KafkaTemplate<String, String> kafkaTemplate;
-//
-//    private static final String TOPIC = "e-bank";
-//
-//    @GetMapping("/kafka/{message}")
-//    public String post(@PathVariable("message") String message) {
-//        kafkaTemplate.send(TOPIC, message);
-//        return message;
-//    }
+    public final BankTransactionService bankTransactionService;
+
+    public BankTransactionController(BankTransactionService bankTransactionService) {
+        this.bankTransactionService = bankTransactionService;
+    }
 
     @Operation(summary = "Get all transactions")
     @GetMapping("")
     public ResponseEntity<Object> getAllTransactions() {
         Map<String, Object> map = new HashMap<>();
         map.put("transactions", bankTransactionService.getAllTransactions());
-        return ResponseEntity.ok(map);
-    }
-
-    @Operation(summary = "Get user's transactions")
-    @GetMapping("/user/{userIban}")
-    public ResponseEntity<Object> getTransactionsByIban(@PathVariable("userIban") String iban) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("transactions", bankTransactionService.getTransactionsByIban(iban));
-        return ResponseEntity.ok(map);
-    }
-
-    @GetMapping("/date/{date}")
-    public ResponseEntity<Object> getTransactionsByDate(@PathVariable("date") String date) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("transactions", bankTransactionService.getTransactionsByDate(date));
         return ResponseEntity.ok(map);
     }
 
@@ -64,7 +40,7 @@ public class BankTransactionController {
         return ResponseEntity.ok(map);
     }
 
-    @Operation(summary = "Insert 1200 transactions")
+    @Operation(summary = "Insert 120 transactions into Kafka topic")
     @PostMapping("")
     public ResponseEntity<Object> generateTransaction() {
         bankTransactionService.generateTransactionsByUsers();
