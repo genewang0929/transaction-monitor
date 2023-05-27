@@ -1,16 +1,12 @@
 FROM maven:3.8.3-jdk-11-slim AS build
 
-RUN mkdir -p /project
+WORKDIR /project
 
 COPY . /project
-
-WORKDIR /project
 
 RUN mvn clean package -DskipTests
 
 FROM openjdk:11
-
-RUN mkdir /app
 
 WORKDIR /app
 

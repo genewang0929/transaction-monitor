@@ -30,11 +30,6 @@ public class BankTransactionService {
         return bankTransactionRepository.findAll();
     }
 
-    public List<BankTransaction> getTransactionsByIban(String iban) { return bankTransactionRepository.findByIban(iban); }
-
-
-    public List<BankTransaction> getTransactionsByDate(String date) {return bankTransactionRepository.findByDate(date); }
-
     public void generateTransactionsByUsers() {
         List<AppUser> users = appUserService.getAllUsers();
         List<BankTransaction> bankTransactions = new ArrayList<>();
