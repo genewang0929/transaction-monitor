@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: transaction-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: transaction-monitor
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transaction-deployment
+  labels:
+    app: transaction-monitor
+spec:
+#  replicas: 1
+  selector:
+    matchLabels:
+      app: transaction-monitor
+  template:
+    metadata:
+      labels:
+        app: transaction-monitor
+    spec:
+      containers:
+        - name: transaction-monitor
+          image: genewang0929/transaction-monitor:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATA_MONGODB_URI
+              value: "mongodb://mongo-service.default:27017/kafka_transaction"
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: "kafka-service.default:9092"

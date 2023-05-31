@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-sink-connector-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: kafka-sink-connector
+  ports:
+    - protocol: TCP
+      port: 8083
+      targetPort: 8083
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-sink-connector-deployment
+  labels:
+    app: kafka-sink-connector
+spec:
+#  replicas: 2
+  selector:
+    matchLabels:
+      app: kafka-sink-connector
+  template:
+    metadata:
+      labels:
+        app: kafka-sink-connector
+    spec:
+      containers:
+        - name: kafka-sink-connector
+          image: genewang0929/kafka-sink-connector:latest
+          ports:
+            - containerPort: 8083
+          env:
+            - name: CONNECT_BOOTSTRAP_SERVERS
+              value: kafka-service.default:9092
+            - name: CONNECT_REST_ADVERTISED_HOST_NAME
+              value: connect
+            - name: CONNECT_REST_PORT
+              value: "8083"
+            - name: CONNECT_GROUP_ID
+              value: connect-cluster-group
+            - name: CONNECT_CONFIG_STORAGE_TOPIC
+              value: docker-connect-configs
+            - name: CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR
+              value: "1"
+            - name: CONNECT_OFFSET_FLUSH_INTERVAL_MS
+              value: "10000"
+            - name: CONNECT_OFFSET_STORAGE_TOPIC
+              value: docker-connect-offsets
+            - name: CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR
+              value: "1"
+            - name: CONNECT_STATUS_STORAGE_TOPIC
+              value: docker-connect-status
+            - name: CONNECT_STATUS_STORAGE_REPLICATION_FACTOR
+              value: "1"
+            - name: CONNECT_ZOOKEEPER_CONNECT
+              value: zookeeper-service.default:2181
+            - name: CONNECT_PLUGIN_PATH
+              value: /usr/share/java,/usr/share/confluent-hub-components
+            - name: CONNECT_CONNECTIONS_MAX_IDLE_MS
+              value: "180000"
+            - name: CONNECT_METADATA_MAX_AGE_MS
+              value: "180000"
+            - name: CONNECT_AUTO_CREATE_TOPICS_ENABLE
+              value: "true"
+            - name: CONNECT_KEY_CONVERTER
+              value: org.apache.kafka.connect.json.JsonConverter
+            - name: CONNECT_VALUE_CONVERTER
+              value: org.apache.kafka.connect.json.JsonConverter
