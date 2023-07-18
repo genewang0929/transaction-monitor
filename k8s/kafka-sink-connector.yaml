@@ -30,6 +30,9 @@ spec:
       containers:
         - name: kafka-sink-connector
           image: genewang0929/kafka-sink-connector:latest
+          volumeMounts:
+            - name: kafka-sink-connector-persistent-storage
+              mountPath: /kafka-sink-connector-data
           ports:
             - containerPort: 8083
           env:
@@ -69,3 +72,8 @@ spec:
               value: org.apache.kafka.connect.json.JsonConverter
             - name: CONNECT_VALUE_CONVERTER
               value: org.apache.kafka.connect.json.JsonConverter
+      volumes:
+        - name: kafka-sink-connector-persistent-storage
+          hostPath:
+            path: /kafka-sink-connector-data
+            type: DirectoryOrCreate
