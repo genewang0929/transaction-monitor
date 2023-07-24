@@ -26,28 +26,22 @@ public class BankTransactionService {
     }
 
 
-    public List<BankTransaction> getAllTransactions() {
-        return bankTransactionRepository.findAll();
+    public Page<BankTransaction> getTransactionsByIban(String iban, int offset, int pageSize) {
+        Pageable paging = PageRequest.of(offset, pageSize, Sort.by("date").descending());
+        return bankTransactionRepository.findByIban(iban, paging);
     }
 
-    public void generateTransactionsByUsers() {
-        List<AppUser> users = appUserService.getAllUsers();
-        List<BankTransaction> bankTransactions = new ArrayList<>();
-
-        // generate 12 transactions for each user
-        for (AppUser user: users) {
-            for (int month = 1; month <= 12; month++) {
-                BankTransaction bankTransaction = new BankTransaction();
-                bankTransaction.setId(UUID.randomUUID().toString());
-                bankTransaction.setIban(user.getIban());
-                bankTransaction.setAmountWithCurrency(getRandomAmountWithCurrency());
-                bankTransaction.setDate(getRandomDate());
-                bankTransaction.setDescription(getRandomDescription());
-                kafkaTemplate.send(TOPIC, bankTransaction);
-            }
+    public void generateTenTransactionsByUsers(String iban) {
+        for (int i = 1; i <= 10; i++) {
+            BankTransaction bankTransaction = new BankTransaction();
+            bankTransaction.setId(UUID.randomUUID().toString());
+            bankTransaction.setIban(iban);
+            bankTransaction.setAmountWithCurrency(getRandomAmountWithCurrency());
+            bankTransaction.setDate(getRandomDate());
+            bankTransaction.setDescription(getRandomDescription());
+//            kafkaTemplate.send(TOPIC, bankTransaction);
+            bankTransactionRepository.insert(bankTransaction);
         }
-
-//        bankTransactionRepository.saveAll(bankTransactions);
 
     }
 
