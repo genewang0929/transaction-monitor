@@ -1,9 +1,7 @@
 package com.chunhanwang.config;
 
-import com.chunhanwang.filter.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.annotation.*;
-import org.springframework.http.*;
 import org.springframework.security.authentication.*;
 import org.springframework.security.config.annotation.authentication.builders.*;
 import org.springframework.security.config.annotation.web.builders.*;
@@ -11,7 +9,6 @@ import org.springframework.security.config.annotation.web.configuration.*;
 import org.springframework.security.config.http.*;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.security.crypto.bcrypt.*;
-import org.springframework.security.web.authentication.*;
 import org.springframework.web.cors.*;
 
 import java.util.*;
@@ -23,20 +20,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     @Lazy
     private UserDetailsService userDetailsService;
-    @Autowired
-    @Lazy
-    private JWTAuthenticationFilter jwtAuthenticationFilter;
 
     @Override // setting the rules of API's authentication
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests()
-//                .antMatchers("/verification/**").permitAll()
-//                .antMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .anyRequest().permitAll() // tmp for testing
-//                .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()

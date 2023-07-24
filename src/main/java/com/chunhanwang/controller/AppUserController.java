@@ -14,8 +14,6 @@ import java.util.*;
 public class AppUserController {
     @Autowired
     public AppUserService appUserService;
-    @Autowired
-    public JWTService jwtService;
 
     @Operation(summary = "Get all users")
     @GetMapping("")

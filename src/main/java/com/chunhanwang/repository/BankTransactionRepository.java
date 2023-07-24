@@ -9,7 +9,5 @@ import java.util.*;
 
 @Repository
 public interface BankTransactionRepository extends MongoRepository<BankTransaction, String> {
-    List<BankTransaction> findByIban(String iban);
-    List<BankTransaction> findByDate(String date);
     List<BankTransaction> findByIbanAndDate(String iban, String date);
 }
