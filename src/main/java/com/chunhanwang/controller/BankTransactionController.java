@@ -4,13 +4,14 @@ import com.chunhanwang.entity.*;
 import com.chunhanwang.service.*;
 import io.swagger.v3.oas.annotations.*;
 import org.json.*;
+import org.springframework.data.domain.Page;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
 @RestController
-@RequestMapping(value = "/bankTransaction", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/bankTransaction", produces = MediaType.APPLICATION_JSON_VALUE)
 public class BankTransactionController {
     public final BankTransactionService bankTransactionService;
 
@@ -18,11 +19,14 @@ public class BankTransactionController {
         this.bankTransactionService = bankTransactionService;
     }
 
-    @Operation(summary = "Get all transactions")
-    @GetMapping("")
-    public ResponseEntity<Object> getAllTransactions() {
+    @Operation(summary = "Get a user's transactions")
+    @GetMapping("/{userIban}/{offset}/{pageSize}")
+    public ResponseEntity<Object> getTransactionsByIban(@PathVariable("userIban") String iban,
+                                                        @PathVariable("offset") int offset,
+                                                        @PathVariable("pageSize") int pageSize) {
         Map<String, Object> map = new HashMap<>();
-        map.put("transactions", bankTransactionService.getAllTransactions());
+        Page getTransactionsByIban = bankTransactionService.getTransactionsByIban(iban, offset, pageSize);
+        map.put("transactions", getTransactionsByIban);
         return ResponseEntity.ok(map);
     }
 
@@ -40,10 +44,10 @@ public class BankTransactionController {
         return ResponseEntity.ok(map);
     }
 
-    @Operation(summary = "Insert 120 transactions into Kafka topic")
+    @Operation(summary = "Insert 10 transactions to the user's account")
     @PostMapping("")
-    public ResponseEntity<Object> generateTransaction() {
-        bankTransactionService.generateTransactionsByUsers();
+    public ResponseEntity<Object> generateTransaction(String iban) {
+        bankTransactionService.generateTenTransactionsByUsers(iban);
         return ResponseEntity.ok().build();
     }
 
