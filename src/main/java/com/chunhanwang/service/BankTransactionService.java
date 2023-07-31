@@ -39,8 +39,8 @@ public class BankTransactionService {
             bankTransaction.setAmountWithCurrency(getRandomAmountWithCurrency());
             bankTransaction.setDate(getRandomDate());
             bankTransaction.setDescription(getRandomDescription());
-//            kafkaTemplate.send(TOPIC, bankTransaction);
-            bankTransactionRepository.insert(bankTransaction);
+            kafkaTemplate.send(TOPIC, bankTransaction);
+//            bankTransactionRepository.insert(bankTransaction);
         }
 
     }
