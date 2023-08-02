@@ -3,6 +3,7 @@ kind: Service
 metadata:
   name: transaction-service
 spec:
+  type: LoadBalancer
   selector:
     app: transaction-monitor
   ports:
