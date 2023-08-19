@@ -12,7 +12,7 @@ _Prerequisite: [Docker](https://www.docker.com/get-started/)_
 - Wait until ```INFO [Worker clientId=connect-1, groupId=connect-cluster-group] (Re-)joining group``` appears on the log file
 - Then, register the Kafka Topic with ```curl -X POST -H "Content-Type: application/json" -d @./connector-config/transactions-sink-connector.json http://localhost:8083/connectors/```
 ### 3. Start using the project
-- Go to [transaction-frontend](https://github.com/genewang0929/transaction-frontend/edit/main/README.md#run-with-docker)
+- Go to [transaction-frontend](https://github.com/genewang0929/transaction-frontend/tree/main#run-with-docker)
 
 
 ## Run with Kubernetes (Pod Autoscaling)
@@ -26,5 +26,5 @@ _Prerequisite: [Docker](https://www.docker.com/get-started/), [minikube](https:/
 - Wait until ```INFO [Worker clientId=connect-1, groupId=connect-cluster-group] (Re-)joining group``` appears on the log file
 - Then, register the Kafka Topic with ```curl -X POST -H "Content-Type: application/json" -d @./connector-config/transactions-sink-connector.json http://192.168.49.2:30162/connectors/```
 ### 3. Start using the project
-- Go to [transaction-frontend](https://github.com/genewang0929/transaction-frontend/edit/main/README.md#run-with-kubernetes-pod-autoscaling)
+- Go to [transaction-frontend](https://github.com/genewang0929/transaction-frontend/tree/main#run-with-kubernetes-pod-autoscaling)
 
