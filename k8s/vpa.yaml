@@ -1,0 +1,22 @@
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: transaction-monitor-vpa
+  namespace: default
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: transaction-deployment
+  updatePolicy:
+    updateMode: "Off"
+  resourcePolicy:
+    containerPolicies:
+      - containerName: '*'
+        minAllowed:
+          cpu: 200m
+          memory: 200Mi
+        maxAllowed:
+          cpu: 500m
+          memory: 500Mi
+        controlledResources: ["cpu", "memory"]
